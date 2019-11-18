@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './ContactDetails.scss'
 
-const ContactDetails = ({ deselectContact, contact }) => {
+const ContactDetails = ({ deselectContact, contact, deleteContact }) => {
   const { name, address, postalCode, city } = contact
 
   return (
@@ -16,6 +16,9 @@ const ContactDetails = ({ deselectContact, contact }) => {
         <div className='buttons'>
           <button className='back-button' onClick={deselectContact}>Back</button>
         </div>
+        <div className='buttons'>
+          <button className='delete-button' onClick={deleteContact}>Delete</button>
+        </div>
       </div>
     </div>
   )
@@ -23,6 +26,7 @@ const ContactDetails = ({ deselectContact, contact }) => {
 
 ContactDetails.propTypes = {
   deselectContact: PropTypes.func.isRequired,
+  deleteContact: PropTypes.func.isRequired,
   contact: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,

@@ -10,6 +10,8 @@ import graphQlClient from '../graphql/client.js'
 import axios from 'axios'
 import csrfToken from 'helpers/csrfToken.js'
 import './ContactBook.scss'
+import gql from 'graphql-tag';
+import { Mutation } from '@apollo/react-components';
 
 const ContactBook = () => (
   <ApolloProvider client={graphQlClient}>
@@ -31,7 +33,7 @@ const ContactBookUI = ({ loading, error, data, refetch }) => {
         { loading && <span className='loading'>Loading...</span> }
         { error && <span className='error'>{ error.message || 'An unexpected error occurred' }</span> }
         { contacts && <ContactList contacts={contacts} selectContact={selectContact} /> }
-        { selectedContact && <ContactDetails contact={selectedContact} deselectContact={deselectContact} /> }
+        { selectedContact && <ContactDetails contact={selectedContact} deselectContact={deselectContact} deleteContact={deleteContact} /> }
         <NewContact createContact={checkDuplicatesAndCreate} onSuccess={refetch} />
       </div>
     </Layout>
@@ -59,6 +61,30 @@ const createContact = ({ name, address, postalCode, city }) =>
     headers: { 'Accept': 'application/json' },
     responseType: 'json'
   })
+
+const DELETE_MUTATION = gql`
+  mutation DeleteContact($id: ID!) {
+    deleteContact(id: $id) {
+      id
+      name
+      address
+      postalCode
+      city
+    }
+  }
+`;
+
+const deleteContact = (deleteContact) => {
+  const [deleteMutation, { data }] = useMutation(DELETE_MUTATION);
+    // deleteMutation({ variables: { id: ContactDetails.propTypes.contact.id } })
+  }
+
+const deleteMutation = () =>
+  console.log("begin deleteContact");
+  <Mutation object={deleteContact}>
+    {(deleteContact, { data }) => (this.deleteContact(deleteContact))}
+  </Mutation>
+
 
 const findNearDuplicates = ({ name, address, postalCode, city }) =>
   axios.get('/contacts/near_duplicates', {
